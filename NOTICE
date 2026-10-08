@@ -1,0 +1,9 @@
+Kino plugin: Internet Archive
+Copyright 2026 kinotvapp
+
+Licensed under the Apache License, Version 2.0. See the LICENSE file.
+
+Bump Kino 0.1.0
+Catalog assembled from public BetaSeries episode pages and VOE season folders supplied by the user.
+VOE loader reader adapted from prior Toku Kino work.
+Generated plugin.js replaces the template plugin; SDK files are unchanged.
