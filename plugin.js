@@ -3,7 +3,7 @@ const CATALOG = {"series":{"id":"bump-2021","ref":"bump-2021","title":"Bump (202
 
 // Bump Kino. The VOE public-loader data reader is adapted from Toku Kino.
 // No scripts from the video host are evaluated. Signed media links are never cached.
-const PLAYER_HOSTS = ["voe.sx", "teresapoliticallearn.com"];
+const PLAYER_HOSTS = ["voe.sx", "teresapoliticallearn.com", "megankiddifference.com"];
 
 function log(step, detail) {
   try { kino.log("[bump]", step, detail); } catch { /* diagnostics never interrupt playback */ }
@@ -166,7 +166,7 @@ export async function resolve(ref) {
   const deadline = Date.now() + 18000;
   // This is the public player host VOE navigates to for the inspected share links.
   // Opening it directly avoids spending the call's budget on the navigation page first.
-  let url = "https://teresapoliticallearn.com/" + code;
+  let url = "https://megankiddifference.com/" + code;
   // At most one ordinary navigation, bounded below Kino's 20-second resolve limit.
   for (let step = 0; step < 2; step++) {
     const page = await playerPage(url, code, deadline);

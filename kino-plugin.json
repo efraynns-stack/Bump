@@ -1,13 +1,14 @@
 {
   "id": "bump-kino",
   "name": "Bump Kino",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "apiVersion": 4,
   "entry": "plugin.js",
   "description": "Bump (2021): cinco temporadas y 50 capítulos en VOE. Fichas y miniaturas de BetaSeries.",
   "hosts": [
     "voe.sx",
-    "teresapoliticallearn.com"
+    "teresapoliticallearn.com",
+    "megankiddifference.com"
   ],
   "streamHosts": "any",
   "capabilities": [
