@@ -1,8 +1,18 @@
-# Bump Kino · 0.1.0
+# Bump Kino · 0.1.1
 
 Plugin independiente para ver **Bump (2021)** en Kino, compatible con la versión 0.9.53.
 Incluye cinco temporadas con diez capítulos cada una: **50 videos**, asociados por los nombres
 `SxxExx` de tus archivos en VOE. Fichas e imágenes de [BetaSeries](https://www.betaseries.com/es/show/bump-2021).
+
+## Actualización de VOE · 13 de octubre de 2026
+
+VOE cambió el dominio público de su reproductor. La 0.1.1 declara el nuevo servidor y obtiene
+los enlaces HLS desde él. Conserva el identificador `bump-kino`, los 50 capítulos, sus fichas
+y las referencias del progreso.
+
+Si ya lo tienes instalado, sube los archivos actualizados a tu mismo repositorio y ve a
+**Ajustes → Plugins → Bump Kino → Buscar actualización**. Acepta el nuevo dominio que Kino
+mostrará y comprueba que la versión sea **0.1.1**.
 
 ## Contenido
 
@@ -20,7 +30,7 @@ No está en las carpetas proporcionadas y no se muestra como un capítulo reprod
 
 1. Crea un repositorio público nuevo llamado **BumpKino** en tu cuenta. Puedes usar
    [la plantilla oficial](https://github.com/kinotvapp/kino-plugin-archive) con **Use this template → Create a new repository**.
-2. Descomprime este paquete y sube **el contenido** de `Bump-Kino-0.1.0` al repositorio.
+2. Descomprime este paquete y sube **el contenido** de `Bump-Kino-0.1.1` al repositorio.
    `kino-plugin.json` y `plugin.js` deben quedar en la raíz.
 3. Cuando estén subidos, en el televisor abre **Ajustes → Plugins → Agregar un plugin** y escribe
    `efraynns-stack/BumpKino` si lo creaste con ese nombre y en esa cuenta.
@@ -31,8 +41,8 @@ Este paquete no crea ni publica el repositorio por sí mismo. No reemplaza PSXtv
 ## Permisos y límites
 
 El catálogo está incluido: abrirlo no descarga 50 fichas cada vez. VOE se consulta al reproducir.
-Los dominios del reproductor público verificados son `voe.sx` y `teresapoliticallearn.com`.
-Se abre directamente el segundo, al que VOE dirige los enlaces compartidos, para evitar una
+Los dominios declarados son `voe.sx`, el anterior `teresapoliticallearn.com` y el actual
+`megankiddifference.com`. Se abre directamente el actual para evitar una
 consulta extra antes de encontrar el video. El tiempo total de resolución está limitado a 18 segundos.
 El manifiesto usa `apiVersion: 4` y `streamHosts: "any"`, porque VOE entrega videos y subtítulos
 desde servidores CDN variables. Kino muestra ese permiso al instalar. No se usa navegador oculto,
