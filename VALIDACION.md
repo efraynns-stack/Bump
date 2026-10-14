@@ -1,15 +1,17 @@
-# Actualización de VOE · 13 de octubre de 2026
+# Dominios de VOE · Bump Kino 0.1.2
 
-Versión: 0.1.1.
+Requiere Kino 0.9.55+ y la aprobación del permiso general HTTPS de API 9.
 
-- VOE dirige sus páginas públicas a megankiddifference.com. Se comprobó que el dominio anterior también navega al nuevo.
-- El nuevo dominio está declarado en el manifiesto. Kino solicita aprobarlo al actualizar.
-- Se mantienen los identificadores, los catálogos y las referencias de series y capítulos.
-- El SDK acepta el manifiesto. Las 10 pruebas automáticas pasan.
-- Las muestras de video del informe test/voe-update-live-results.json entregan HLS VOD, variantes HTTP 200 y segmentos HTTP 206.
-- No se han reproducido todos los capítulos ni se ha instalado esta versión en el televisor. La comprobación nativa queda pendiente.
+- Manifiesto y exportaciones aceptados por el validador, con la nueva línea de consentimiento en rojo.
+- 32 pruebas del plugin aprobadas, ninguna fallida. Verifican los 50 capítulos, cinco temporadas, fichas y referencias, redirecciones HTTP/JavaScript a nuevos dominios, permiso no aprobado, rutas distintas, ciclos, límite de tres páginas, cuotas y tiempo total.
+- El kit pasa: 207 pruebas aprobadas, 11 omitidas por sus condiciones originales y ninguna fallida. Referencia oficial API 9 y aviso de aprobación igual que en Toku Kino 0.3.5. El shim es anterior y no implementa el permiso nativo general ni sus cuotas: las pruebas modelan hosts ficticios y errores nativos explícitamente.
+- Se reutiliza solo el dominio de un reproductor que entregó HLS, hasta 30 días. Nunca se guardan enlaces de reproducción temporales, códigos de video en esta caché, cookies ni sesiones. Sin permiso activo, un dominio nuevo guardado no se consulta.
+- La consulta directa conserva la ruta rápida; ante un fallo de transporte o HTTP 404/410 del primer espejo, se puede consultar una vez el enlace estable del mismo video en VOE. Verificaciones humanas y restricciones de acceso no se reintentan.
+- El build de plugin.js a partir de src/plugin.js y catalog.json es reproducible. El catálogo coincide con GitHub y no se modifica. Se sincroniza el fuente que había quedado en 0.1.0 al subir manualmente solo el plugin compilado.
+- Muestras reales S1E1, S3E1 y S5E1: HLS VOD y variantes HTTP 200, segmentos por rango HTTP 206. Subtítulos en español HTTP 200 en S1 y S3; S5 no entregó pistas. Informe: test/voe-update-live-results.json.
+- La aprobación general y la reproducción audiovisual todavía deben probarse en Android TV tras actualizar Kino; no se ha visto todo el catálogo.
 
-Los informes no contienen enlaces de reproducción temporales, cookies ni credenciales.
+Fuentes de referencia: https://kinotvapp.github.io/kino-plugins/reference/contract.json y https://kinotvapp.github.io/kino-plugins/reference/kino.d.ts, descargadas el 14 de octubre de 2026 UTC.
 
 ---
 

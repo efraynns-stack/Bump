@@ -4,6 +4,25 @@ const CATALOG = {"series":{"id":"bump-2021","ref":"bump-2021","title":"Bump (202
 // Bump Kino. The VOE public-loader data reader is adapted from Toku Kino.
 // No scripts from the video host are evaluated. Signed media links are never cached.
 const PLAYER_HOSTS = ["voe.sx", "teresapoliticallearn.com", "megankiddifference.com"];
+const PLAYER_HOST_CACHE = "voe-player-host-v1";
+
+function initialPlayerUrl(code) {
+  try {
+    const host = kino.storage.get(PLAYER_HOST_CACHE);
+    if (typeof host === "string" && /^[a-z0-9.-]{1,253}$/.test(host)) {
+      const url = playerUrl("https://" + host + "/" + code, code);
+      if (url) return url;
+    }
+  } catch { /* Optional domain cache. */ }
+  return "https://megankiddifference.com/" + code;
+}
+
+function rememberPlayerUrl(url) {
+  try {
+    // Only public domain metadata; no video codes, cookies or temporary media URLs.
+    kino.storage.set(PLAYER_HOST_CACHE, new URL(url).hostname, { ttlMs: 30 * 24 * 60 * 60 * 1000 });
+  } catch { /* Optional domain cache. */ }
+}
 
 function log(step, detail) {
   try { kino.log("[bump]", step, detail); } catch { /* diagnostics never interrupt playback */ }
@@ -65,7 +84,9 @@ function playerUrl(raw, code) {
   const safe = safeHttps(raw);
   if (!safe) return null;
   const u = new URL(safe);
-  return PLAYER_HOSTS.includes(u.hostname) && u.pathname === "/" + code && !u.search && !u.hash ? safe : null;
+  // Kino owns this grant; the plugin cannot approve its own hosts.
+  return (PLAYER_HOSTS.includes(u.hostname) || kino.fetchAnyHost === true)
+    && u.pathname === "/" + code && !u.search && !u.hash ? safe : null;
 }
 
 function checkRestriction(html) {
@@ -83,7 +104,7 @@ function checkRestriction(html) {
 
 async function playerPage(url, code, deadline) {
   await null;
-  const remaining = deadline - Date.now();
+  const remaining = deadline - Date.now() - 1500;
   if (remaining < 1000) throw kino.error("unavailable", "VOE tardó demasiado en responder");
   let r;
   try {
@@ -91,14 +112,21 @@ async function playerPage(url, code, deadline) {
       timeoutMs: Math.min(15000, remaining), headers: { Accept: "text/html" } });
   } catch (e) {
     log("VOE_FETCH_FAILED", e && e.code || "network");
-    throw kino.error("unavailable", "No se pudo consultar el reproductor de VOE");
+    if (e && e.code === "rate_limited") throw kino.error("rate_limited", "Se alcanzó el límite de consultas del reproductor");
+    const failure = kino.error("unavailable", "No se pudo consultar el reproductor de VOE");
+    failure.retryShare = true;
+    throw failure;
   }
   log("VOE_FETCH", "http=" + r.status);
   if (r.status === 429) throw kino.error("rate_limited", "VOE está limitando las consultas");
-  if (r.status === 404 || r.status === 410) throw kino.error("not_found", "El video ya no está disponible en VOE");
-  if (r.status >= 300 && r.status < 400) {
+  if (r.status === 404 || r.status === 410) {
+    const failure = kino.error("not_found", "El video ya no está disponible en VOE");
+    failure.retryShare = true;
+    throw failure;
+  }
+  if ([301, 302, 303, 307, 308].includes(r.status)) {
     let target = null;
-    try { target = playerUrl(new URL(r.headers.location, url).href, code); } catch { /* malformed location */ }
+    try { target = r.headers.location && playerUrl(new URL(r.headers.location, url).href, code); } catch { /* malformed location */ }
     if (!target) throw kino.error("unavailable", "VOE redirigió a un reproductor no reconocido");
     return { target };
   }
@@ -164,20 +192,35 @@ export async function resolve(ref) {
   if (!episode) throw kino.error("not_found", "Este capítulo no está en el catálogo de Bump");
   const code = episode.videoCode;
   const deadline = Date.now() + 18000;
-  // This is the public player host VOE navigates to for the inspected share links.
-  // Opening it directly avoids spending the call's budget on the navigation page first.
-  let url = "https://megankiddifference.com/" + code;
-  // At most one ordinary navigation, bounded below Kino's 20-second resolve limit.
-  for (let step = 0; step < 2; step++) {
-    const page = await playerPage(url, code, deadline);
+  // Keep the fast direct route and learn rotating domains. A retired mirror may
+  // fall back once to VOE's stable share URL within the same total time budget.
+  let url = initialPlayerUrl(code);
+  const shareUrl = "https://voe.sx/" + code;
+  const visited = new Set();
+  // At most three pages; all fetches share Kino's 20-second resolve budget.
+  for (let step = 0; step < 3; step++) {
+    visited.add(url);
+    let page;
+    try { page = await playerPage(url, code, deadline); }
+    catch (e) {
+      if (step === 0 && url !== shareUrl && e.retryShare && deadline - Date.now() > 2500) {
+        url = shareUrl;
+        continue;
+      }
+      throw e;
+    }
     if (page.html) {
       const stream = voeStream(page.html, url);
-      if (stream) { log("VOE_RESOLVED", "season=" + episode.season + " episode=" + episode.number); return stream; }
+      if (stream) {
+        rememberPlayerUrl(url);
+        log("VOE_RESOLVED", "season=" + episode.season + " episode=" + episode.number);
+        return stream;
+      }
     }
     const navigation = page.target || (page.html &&
       (/window\.location\.href\s*=\s*(["'])(https:\/\/[^"']+)\1/.exec(page.html) || [])[2]);
     const next = playerUrl(navigation, code);
-    if (!next || next === url) break;
+    if (!next || visited.has(next) || step === 2) break;
     url = next;
   }
   throw kino.error("unavailable", "No se encontró un video público compatible en el reproductor de VOE");

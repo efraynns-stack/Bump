@@ -1,0 +1,63 @@
+{
+  "checkedAt": "2026-10-14T02:16:33.186Z",
+  "samples": [
+    {
+      "project": "bump",
+      "ref": "bump:1:1",
+      "playerHost": "megankiddifference.com",
+      "mime": "application/vnd.apple.mpegurl",
+      "masterStatus": 200,
+      "variantStatus": 200,
+      "vod": true,
+      "segmentStatus": 206,
+      "subtitles": [
+        {
+          "language": "es",
+          "status": 200
+        }
+      ],
+      "outcome": "ok"
+    },
+    {
+      "project": "bump",
+      "ref": "bump:3:1",
+      "playerHost": "megankiddifference.com",
+      "mime": "application/vnd.apple.mpegurl",
+      "masterStatus": 200,
+      "variantStatus": 200,
+      "vod": true,
+      "segmentStatus": 206,
+      "subtitles": [
+        {
+          "language": "es",
+          "status": 200
+        }
+      ],
+      "outcome": "ok"
+    },
+    {
+      "project": "bump",
+      "ref": "bump:5:1",
+      "playerHost": "megankiddifference.com",
+      "mime": "application/vnd.apple.mpegurl",
+      "masterStatus": 200,
+      "variantStatus": 200,
+      "vod": true,
+      "segmentStatus": 206,
+      "subtitles": [],
+      "outcome": "ok"
+    }
+  ],
+  "androidTvPlayback": "pendiente de prueba por el usuario",
+  "version": "0.1.2",
+  "automatedTests": {
+    "passed": 32,
+    "failed": 0
+  },
+  "sdkTests": {
+    "passed": 207,
+    "skipped": 11,
+    "failed": 0
+  },
+  "generalGrant": "approval simulated for synthetic fixture hosts; native Android TV approval pending"
+}

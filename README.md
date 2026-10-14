@@ -1,18 +1,25 @@
-# Bump Kino · 0.1.1
+# Bump Kino · 0.1.2
 
-Plugin independiente para ver **Bump (2021)** en Kino, compatible con la versión 0.9.53.
+Plugin independiente para ver **Bump (2021)** en Kino, para Kino 0.9.55 o superior.
 Incluye cinco temporadas con diez capítulos cada una: **50 videos**, asociados por los nombres
 `SxxExx` de tus archivos en VOE. Fichas e imágenes de [BetaSeries](https://www.betaseries.com/es/show/bump-2021).
 
-## Actualización de VOE · 13 de octubre de 2026
+## Dominios de VOE · 0.1.2
 
-VOE cambió el dominio público de su reproductor. La 0.1.1 declara el nuevo servidor y obtiene
-los enlaces HLS desde él. Conserva el identificador `bump-kino`, los 50 capítulos, sus fichas
-y las referencias del progreso.
+La resolución sigue las redirecciones HTTP y JavaScript de VOE al mismo video, incluso a un
+dominio nuevo, con el permiso general HTTPS de API 9 aprobado. No hace falta publicar una
+versión por cada cambio de dirección. El plugin no concede permisos por sí mismo.
 
-Si ya lo tienes instalado, sube los archivos actualizados a tu mismo repositorio y ve a
-**Ajustes → Plugins → Bump Kino → Buscar actualización**. Acepta el nuevo dominio que Kino
-mostrará y comprueba que la versión sea **0.1.1**.
+Se guarda solo el dominio del reproductor que resolvió correctamente, durante hasta 30 días,
+para conservar la consulta directa en las próximas reproducciones. Si el reproductor directo
+no responde o devuelve HTTP 404/410, se puede consultar una vez el enlace base de VOE, dentro
+del mismo límite de tiempo. Las restricciones de acceso y verificaciones humanas no se reintentan.
+
+El máximo sigue siendo tres páginas y 18 segundos de resolución, con margen para el límite de
+20 segundos de Kino. Cambios en el formato del reproductor, contenido eliminado o verificaciones
+humanas todavía pueden requerir una corrección o impedir reproducir.
+
+Se mantienen el identificador `bump-kino`, los 50 capítulos, fichas, imágenes y referencias del progreso.
 
 ## Contenido
 
@@ -26,27 +33,26 @@ mostrará y comprueba que la versión sea **0.1.1**.
 BetaSeries incluye un especial como episodio 11 de la temporada 4, **Bump: A Christmas Film**.
 No está en las carpetas proporcionadas y no se muestra como un capítulo reproducible.
 
-## Instalación desde GitHub
+## Instalar o actualizar
 
-1. Crea un repositorio público nuevo llamado **BumpKino** en tu cuenta. Puedes usar
-   [la plantilla oficial](https://github.com/kinotvapp/kino-plugin-archive) con **Use this template → Create a new repository**.
-2. Descomprime este paquete y sube **el contenido** de `Bump-Kino-0.1.1` al repositorio.
-   `kino-plugin.json` y `plugin.js` deben quedar en la raíz.
-3. Cuando estén subidos, en el televisor abre **Ajustes → Plugins → Agregar un plugin** y escribe
-   `efraynns-stack/BumpKino` si lo creaste con ese nombre y en esa cuenta.
-4. Instala el plugin. Abre Bump, selecciona la temporada y prueba un capítulo.
+1. Actualiza Kino a **0.9.55 o superior**.
+2. Abre **Ajustes → Plugins → Bump Kino → Buscar actualización**.
+3. Acepta una vez el permiso en rojo **Puede conectarse a cualquier servidor público de internet
+   (solo https, nunca tu red local)** y comprueba que muestre **0.1.2**.
+4. Para instalar desde cero, agrega `efraynns-stack/Bump`. Abre Bump, selecciona una temporada
+   y prueba un capítulo.
 
-Este paquete no crea ni publica el repositorio por sí mismo. No reemplaza PSXtv ni Toku Kino.
+Repositorio: [efraynns-stack/Bump](https://github.com/efraynns-stack/Bump).
 
 ## Permisos y límites
 
 El catálogo está incluido: abrirlo no descarga 50 fichas cada vez. VOE se consulta al reproducir.
-Los dominios declarados son `voe.sx`, el anterior `teresapoliticallearn.com` y el actual
-`megankiddifference.com`. Se abre directamente el actual para evitar una
-consulta extra antes de encontrar el video. El tiempo total de resolución está limitado a 18 segundos.
-El manifiesto usa `apiVersion: 4` y `streamHosts: "any"`, porque VOE entrega videos y subtítulos
-desde servidores CDN variables. Kino muestra ese permiso al instalar. No se usa navegador oculto,
-sesión de usuario, clave de API, descarga de videos ni telemetría.
+Los dominios principales declarados siguen siendo `voe.sx`, `teresapoliticallearn.com` y
+`megankiddifference.com`. El manifiesto usa `apiVersion: 9`, `fetchHosts: "any"` y
+`streamHosts: "any"`. El permiso general permite nuevas direcciones públicas por HTTPS en el
+puerto 443; Kino aplica el bloqueo de redes locales y los límites de consultas. Si ese permiso
+no está activo, solo se siguen los dominios conocidos y no se utiliza un nuevo dominio guardado.
+No se usa navegador oculto, sesión de usuario, clave de API, descarga de videos ni telemetría.
 
 Una verificación humana, un archivo eliminado o un cambio del reproductor termina con un error
 controlado. El plugin no resuelve CAPTCHA ni evita restricciones de acceso o DRM.
@@ -67,6 +73,9 @@ video, actualiza su `videoCode` en `catalog.json`, genera de nuevo `plugin.js` y
 del manifiesto. El catálogo es una instantánea del 8 de octubre de 2026; no se actualiza
 automáticamente desde las carpetas.
 
-Los archivos `sdk/`, `contract.json`, `kino.d.ts` y `GUIDE.md` proceden de la plantilla oficial de
-Kino. El lector VOE está adaptado del trabajo previo en Toku Kino. La licencia del código no
+El SDK procede de la plantilla oficial. `contract.json` y `kino.d.ts` se actualizaron a la
+referencia oficial API 9. El validador muestra el nuevo consentimiento; las expectativas del
+kit se adaptaron a la referencia. El shim sigue siendo anterior y no reproduce el permiso
+nativo general ni sus cuotas: las pruebas de dominio nuevo modelan únicamente hosts ficticios
+permitidos. La aprobación real debe comprobarse en Kino. El lector VOE está adaptado del trabajo previo en Toku Kino. La licencia del código no
 concede derechos sobre las fichas, las imágenes de BetaSeries, la serie ni los videos.
